@@ -25,21 +25,55 @@ int main(void)
   CLKPR=0;			// set clock prescaler to 1 (attiny 25/45/85/24/44/84/13/13A)
   #endif
 
-  uint64_t i, j;
+  uint64_t i, j, rr, rg, rb, rR, rG, rB, k, d, l, rz;
 
   for (i=0; i<255; i++) {
     led[0].r = led[0].g = led[0].b = i;
-    led[1].r = led[1].g = led[1].b = i;
+    led[1].r = led[1].g = led[1].b = 255-i;
     ws2812_setleds(led,3);
     _delay_ms(3);
   }
 
   for (i=255; i>0; i--) {
     led[0].r = led[0].g = led[0].b = i;
-    led[1].r = led[1].g = led[1].b = i;
+    led[1].r = led[1].g = led[1].b = 255-i;
     ws2812_setleds(led,3);
     _delay_ms(3);
   }
+
+  _delay_ms(100);
+
+  rR = rG = rB = 0;
+//  k = 100;
+  d = 255;
+  l = 64;
+
+  for (i=0; i<30; i++) {
+    rz = rand() % 3;
+
+    rr = rand() % l * ((rz+2)%3);
+    rg = rand() % l * ((rz+1)%3);
+    rb = rand() % l * ((rz)%3);
+
+
+    for (j=0; j<d;j++){
+      led[0].r = ((rr * j / d) + (rR * (d-j) / d));
+      led[0].g = ((rg * j / d) + (rG * (d-j) / d));
+      led[0].b = ((rb * j / d) + (rB * (d-j) / d));
+      led[1].r = 127-led[0].r;
+      led[1].g = 127-led[0].g;
+      led[1].b = 127-led[0].b;
+      ws2812_setleds(led,3);
+      _delay_ms(5);
+    }
+
+    rR = rr;
+    rG = rg;
+    rB = rb;
+    _delay_ms(100);
+
+  }
+  _delay_ms(100000);
 
   for (i=0; i<255; i++) {
     led[0].r = i;
@@ -80,7 +114,8 @@ int main(void)
     _delay_ms(30);
   }
 
-  while(1){
+//  while(1){
+  for(i=0; i<100; i++) {
     led[0].r = 255 * rand() % 2;
     led[0].g = 255 * rand() % 2;
     led[0].b = 255 * rand() % 2;
@@ -105,7 +140,8 @@ int main(void)
 
 
 
-  while(1)
+//  while(1)
+  for(i=0; i<100; i++)
   {
     led[0].r=255;led[0].g=00;led[0].b=0;    // Write red to array
     ws2812_setleds(led,2);

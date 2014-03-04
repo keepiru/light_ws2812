@@ -3,7 +3,7 @@
 
 # Change these parameters for your device
 
-F_CPU = 16000000
+F_CPU = 8000000
 DEVICE = atmega168
 
 # Tools:
@@ -38,5 +38,10 @@ $(EXAMPLES): $(LIB)
 clean:
 	rm -f *.hex Objects/*.o Objects/*.lss
 
+PORT = /dev/ttyUSB0
+
+fuse:
+	avrdude -y -P ${PORT} -cbuspirate -pm168 -U lfuse:w:0xe2:m -U hfuse:w:0xd7:m -U efuse:w:0x01:m
+
 flash:
-	avrdude -qq -y -P /dev/ttyACM0 -cstk500v2 -pm168 -Uflash:w:RGB_blinky.hex
+	avrdude -V -y -P ${PORT} -cbuspirate speed=6 -b115200 -pm168 -Uflash:w:RGB_blinky.hex
