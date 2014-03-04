@@ -4,7 +4,7 @@
 # Change these parameters for your device
 
 F_CPU = 16000000
-DEVICE = attiny85
+DEVICE = atmega168
 
 # Tools:
 CC = avr-gcc
@@ -20,7 +20,7 @@ CFLAGS+= -Wall -Wno-pointer-to-int-cast
 
 LDFLAGS = -Wl,--relax,--section-start=.text=0,-Map=main.map
 
-all:	$(EXAMPLES) 
+all:	$(EXAMPLES) flash
 
 $(LIB): $(DEP)
 	@echo Building Library 
@@ -37,3 +37,6 @@ $(EXAMPLES): $(LIB)
 
 clean:
 	rm -f *.hex Objects/*.o Objects/*.lss
+
+flash:
+	avrdude -qq -y -P /dev/ttyACM0 -cstk500v2 -pm168 -Uflash:w:RGB_blinky.hex
